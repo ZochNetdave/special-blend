@@ -2,6 +2,7 @@ import React from "react";
 import { Checkbox, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import "typeface-bad-script";
 
 import Snackbar from "@mui/material/Snackbar";
 
