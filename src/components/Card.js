@@ -43,9 +43,9 @@ function Card() {
 		padding: "5px",
 	};
 
-	const handleChange = (e) => {
-		console.log(e);
-	};
+	// const handleChange = (e) => {
+	// 	console.log(e);
+	// };
 
 	const handleClick = (newState) => () => {
 		setState({ ...newState, open: true });
