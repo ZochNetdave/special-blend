@@ -11,7 +11,7 @@ function Card() {
 	const times = ["9:20am", "9:30am", "9:40am", "9:50am", "10:00am"];
 	const options = ["Fill it up", "Leave a little room", "Leave a lot of room"];
 
-	const orderValues = [];
+	// const orderValues = [];
 
 	const products = [
 		"Hot Chocolate 8oz",
