@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import Card from "./components/Card";
 import starbies from "./starbies.jpg";
@@ -26,7 +25,7 @@ function App() {
 						marginBottom: "-35px",
 						marginTop: "-20px",
 					}}>
-					<img src={starbies} />
+					<img src={starbies} alt={"special-blend-starbies-image"} />
 				</div>
 			</span>
 
