@@ -3,26 +3,47 @@ import { Checkbox, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import "typeface-bad-script";
+import emailjs from "@emailjs/browser";
 
 import Snackbar from "@mui/material/Snackbar";
 
 function Card() {
 	//JS
+
+	const [state, setState] = React.useState({
+		open: false,
+		failOpen: false,
+		vertical: "top",
+		horizontal: "center",
+	});
+
+	const { vertical, horizontal, open, failOpen } = state;
+
 	const times = ["9:20am", "9:30am", "9:40am", "9:50am", "10:00am"];
 	const options = ["Fill it up", "Leave a little room", "Leave a lot of room"];
 
-	// const orderValues = [];
+	const handleRefresh = () => {
+		window.location.reload(false);
+	};
+
+	const orderValues = {
+		name: "",
+		pickUpTime: "",
+		items: [],
+		leaveRoom: "",
+		specialRequests: "",
+	};
 
 	const products = [
-		"Hot Chocolate 8oz",
-		"Hot Chocolate 16oz",
-		"Hot Coffee 8oz",
-		"Iced Coffee 16oz",
-		"Hot Chocolate 16oz",
-		"Lemonade 16oz",
-		"Strawberry Lemonade 16oz",
-		"Cherry Lemonade 16oz",
-		"Blueberry Lemonade 16oz",
+		"Hot Chocolate - 8oz - $1",
+		"Hot Coffee - 8oz - $1",
+		"Hot Chocolate - 16oz - $2",
+		"Iced Coffee - 16oz - $2",
+		"Hot Chocolate - 16oz - $2",
+		"Lemonade - 16oz - $2",
+		"Strawberry Lemonade - 16oz - $2",
+		"Cherry Lemonade - 16oz - $2",
+		"Blueberry Lemonade - 16oz - $2",
 	];
 
 	//CSS
@@ -48,20 +69,40 @@ function Card() {
 	// };
 
 	const handleClick = (newState) => () => {
-		setState({ ...newState, open: true });
+		if (orderValues.name && orderValues.items && orderValues.pickUpTime)
+			try {
+				sendEmail();
+				setState({ ...newState, open: true });
+				setTimeout(() => {
+					handleRefresh();
+				}, 2500);
+			} catch (error) {
+				console.error(error);
+			}
+		else {
+			setState({ ...newState, failOpen: true });
+		}
 	};
 
 	const handleClose = () => {
 		setState({ ...state, open: false });
+		setState({ ...state, failOpen: false });
 	};
 
-	const [state, setState] = React.useState({
-		open: false,
-		vertical: "top",
-		horizontal: "center",
-	});
-	const { vertical, horizontal, open } = state;
-
+	const sendEmail = () => {
+		emailjs
+			.send("special_blend", "order_id", orderValues, {
+				publicKey: "z1_6XIpFaLLStWSxC",
+			})
+			.then(
+				() => {
+					console.log("SUCCESS!");
+				},
+				(error) => {
+					console.log("FAILED...", error);
+				}
+			);
+	};
 	//JSX
 	return (
 		<div style={containerStyles}>
@@ -80,8 +121,11 @@ function Card() {
 					id="standard-basic"
 					label="Name"
 					color={"danger"}
-					required="true"
+					required={true}
 					sx={{ input: { color: "white" }, label: { color: "white" } }}
+					onChange={(event) => {
+						orderValues.name = event.target.value;
+					}}
 				/>
 				<p>Pick Up Time</p>
 				{times.map((time) => {
@@ -92,7 +136,13 @@ function Card() {
 								flexDirection: "row",
 								color: "white",
 							}}>
-							<Checkbox style={{ color: "lightgrey" }} value={time} />
+							<Checkbox
+								style={{ color: "lightgrey" }}
+								value={time}
+								onChange={(event) => {
+									orderValues.pickUpTime = event.target.value;
+								}}
+							/>
 							<p>{time}</p>
 						</span>
 					);
@@ -148,18 +198,22 @@ function Card() {
 											}}>
 											Quantity
 										</p>
-										<select style={{ width: "50px", backgroundColor: "white" }}>
-											<option value={0}>0</option>
-											<option value={1}>1</option>
-											<option value={2}>2</option>
-											<option value={3}>3</option>
-											<option value={4}>4</option>
-											<option value={5}>5</option>
-											<option value={6}>6</option>
-											<option value={7}>7</option>
-											<option value={8}>8</option>
-											<option value={9}>9</option>
-											<option value={10}>10</option>
+										<select
+											style={{ width: "50px", backgroundColor: "white" }}
+											onChange={(event) => {
+												orderValues.items.push(event.target.value);
+											}}>
+											<option value={`${product} quantity: ` + 0}>0</option>
+											<option value={`${product} quantity: ` + 1}>1</option>
+											<option value={`${product} quantity: ` + 2}>2</option>
+											<option value={`${product} quantity: ` + 3}>3</option>
+											<option value={`${product} quantity: ` + 4}>4</option>
+											<option value={`${product} quantity: ` + 5}>5</option>
+											<option value={`${product} quantity: ` + 6}>6</option>
+											<option value={`${product} quantity: ` + 7}>7</option>
+											<option value={`${product} quantity: ` + 8}>8</option>
+											<option value={`${product} quantity: ` + 9}>9</option>
+											<option value={`${product} quantity: ` + 10}>10</option>
 										</select>
 									</div>
 								</span>
@@ -187,7 +241,13 @@ function Card() {
 										flexDirection: "row",
 										color: "white",
 									}}>
-									<Checkbox style={{ color: "lightgrey" }} value={opt} />
+									<Checkbox
+										style={{ color: "lightgrey" }}
+										value={opt}
+										onChange={(event) => {
+											orderValues.leaveRoom = event.target.value;
+										}}
+									/>
 									<p>{opt}</p>
 								</span>
 							);
@@ -217,8 +277,11 @@ function Card() {
 						<TextField
 							id="standard-basic"
 							label="Special Requests"
-							required="true"
+							required={true}
 							multiline
+							onChange={(event) => {
+								orderValues.specialRequests = event.target.value;
+							}}
 							color={"danger"}
 							maxRows={4}
 							style={{ width: "97%" }}
@@ -246,13 +309,18 @@ function Card() {
 						width: "50%",
 						boxShadow: ".5px 1px 1px 1px grey",
 					}}>
-					<Box sx={{ display: "flex", justifyContent: "center" }}>
-						<Button
-							onClick={handleClick({
-								vertical: "bottom",
-								horizontal: "center",
-								color: "white",
-							})}>
+					<Box
+						onClick={handleClick({
+							vertical: "bottom",
+							horizontal: "center",
+							color: "white",
+						})}
+						sx={{
+							display: "flex",
+							width: "100%",
+							justifyContent: "center",
+						}}>
+						<Button>
 							<p style={{ color: "white" }}>Submit</p>
 						</Button>
 					</Box>
@@ -263,6 +331,33 @@ function Card() {
 					onClose={handleClose}
 					message="Order Submitted"
 					key={vertical + horizontal}
+					ContentProps={{
+						sx: {
+							backgroundColor: "white",
+							color: "black",
+							textAlign: "center",
+							justifyContent: "center",
+							fontSize: "19px",
+							boxShadow: "1px 1px 1px 1px grey",
+						},
+					}}
+				/>
+				<Snackbar
+					anchorOrigin={{ vertical, horizontal }}
+					open={failOpen}
+					onClose={handleClose}
+					message="Please Fill out Missing Forms"
+					key={vertical - horizontal}
+					ContentProps={{
+						sx: {
+							backgroundColor: "white",
+							color: "black",
+							textAlign: "center",
+							justifyContent: "center",
+							fontSize: "19px",
+							boxShadow: "1px 1px 1px 1px grey",
+						},
+					}}
 				/>
 			</span>
 		</div>
