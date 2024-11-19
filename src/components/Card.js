@@ -39,7 +39,7 @@ function Card() {
 		"Hot Coffee - 8oz - $1",
 		"Hot Chocolate - 16oz - $2",
 		"Iced Coffee - 16oz - $2",
-		"Hot Chocolate - 16oz - $2",
+		"Hot Coffee - 16oz - $2",
 		"Lemonade - 16oz - $2",
 		"Strawberry Lemonade - 16oz - $2",
 		"Cherry Lemonade - 16oz - $2",
